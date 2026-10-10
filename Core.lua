@@ -51,27 +51,16 @@ local L_DE = {
     ["Kosten pro Skillpunkt (geschaetzt)"] = "Kosten pro Skillpunkt (geschätzt)",
     ["Linksklick: Berufsfenster oeffnen"] = "Linksklick: Berufsfenster öffnen",
     ["Beruf: Links oeffnen, Rechts filtern"] = "Beruf: Links öffnen, Rechts filtern",
-    ["Nur Rezepte, die noch Skill geben (orange/gelb/gruen),\nsortiert nach Kosten pro Skillpunkt.\nVerkaufserloes wird gegengerechnet."] = "Nur Rezepte, die noch Skill geben (orange/gelb/grün),
-sortiert nach Kosten pro Skillpunkt.
-Verkaufserlös wird gegengerechnet.",
+    ["Nur Rezepte, die noch Skill geben (orange/gelb/gruen),\nsortiert nach Kosten pro Skillpunkt.\nVerkaufserloes wird gegengerechnet."] = "Nur Rezepte, die noch Skill geben (orange/gelb/grün),\nsortiert nach Kosten pro Skillpunkt.\nVerkaufserlös wird gegengerechnet.",
     ["Zwischenschritt - wird fuer die Queue gebraucht"] = "Zwischenschritt - wird für die Queue gebraucht",
     ["Naechstes herstellen"] = "Nächstes herstellen",
     ["|cffffcc00%d von %d moeglich|r"] = "|cffffcc00%d von %d möglich|r",
-    ["Liest deine Rezepte neu ein.\nPassiert auch automatisch beim Oeffnen des Berufsfensters."] = "Liest deine Rezepte neu ein.
-Passiert auch automatisch beim Öffnen des Berufsfensters.",
+    ["Liest deine Rezepte neu ein.\nPassiert auch automatisch beim Oeffnen des Berufsfensters."] = "Liest deine Rezepte neu ein.\nPassiert auch automatisch beim Öffnen des Berufsfensters.",
     ["Nur Rezepte mit vollstaendigen Preisen und Gewinn anzeigen."] = "Nur Rezepte mit vollständigen Preisen und Gewinn anzeigen.",
-    ["\nVerfuegbar: "] = "
-Verfügbar: ",
-    ["Alle Zutaten der Queue minus Taschen und Bank.\nAH-Items gehen als Liste 'ForeverProfit' an Auctionator,\nHaendler-Items und Zwischenschritte stehen im Chat."] = "Alle Zutaten der Queue minus Taschen und Bank.
-AH-Items gehen als Liste 'ForeverProfit' an Auctionator,
-Händler-Items und Zwischenschritte stehen im Chat.",
-    ["Noch keine Rezepte eingelesen.\n\n|cffaaaaaaBerufsfenster einmal oeffnen.|r"] = "Noch keine Rezepte eingelesen.
-
-|cffaaaaaaBerufsfenster einmal öffnen.|r",
-    ["Keine Rezepte gefunden, die noch Skill geben.\n\n|cffaaaaaaBerufsfenster oeffnen, damit die Skill-Farben\naktuell sind. Hilft das nicht: /fp probe schicken.|r"] = "Keine Rezepte gefunden, die noch Skill geben.
-
-|cffaaaaaaBerufsfenster öffnen, damit die Skill-Farben
-aktuell sind. Hilft das nicht: /fp probe schicken.|r",
+    ["\nVerfuegbar: "] = "\nVerfügbar: ",
+    ["Alle Zutaten der Queue minus Taschen und Bank.\nAH-Items gehen als Liste 'ForeverProfit' an Auctionator,\nHaendler-Items und Zwischenschritte stehen im Chat."] = "Alle Zutaten der Queue minus Taschen und Bank.\nAH-Items gehen als Liste 'ForeverProfit' an Auctionator,\nHändler-Items und Zwischenschritte stehen im Chat.",
+    ["Noch keine Rezepte eingelesen.\n\n|cffaaaaaaBerufsfenster einmal oeffnen.|r"] = "Noch keine Rezepte eingelesen.\n\n|cffaaaaaaBerufsfenster einmal öffnen.|r",
+    ["Keine Rezepte gefunden, die noch Skill geben.\n\n|cffaaaaaaBerufsfenster oeffnen, damit die Skill-Farben\naktuell sind. Hilft das nicht: /fp probe schicken.|r"] = "Keine Rezepte gefunden, die noch Skill geben.\n\n|cffaaaaaaBerufsfenster öffnen, damit die Skill-Farben\naktuell sind. Hilft das nicht: /fp probe schicken.|r",
     ["Im Kampf nicht moeglich - danach nochmal."] = "Im Kampf nicht möglich - danach nochmal.",
 }
 
@@ -205,13 +194,10 @@ local L_EN = {
     ["Rezepte nach Gewinn sortiert."] = "Recipes sorted by profit.",
     ["Skillen"] = "Leveling",
     ["Skill-Modus"] = "Leveling mode",
-    ["Nur Rezepte, die noch Skill geben (orange/gelb/gruen),\nsortiert nach Kosten pro Skillpunkt.\nVerkaufserloes wird gegengerechnet."] = "Only recipes that still give skill (orange/yellow/green),
-sorted by cost per skill point.
-Sale value is deducted.",
+    ["Nur Rezepte, die noch Skill geben (orange/gelb/gruen),\nsortiert nach Kosten pro Skillpunkt.\nVerkaufserloes wird gegengerechnet."] = "Only recipes that still give skill (orange/yellow/green),\nsorted by cost per skill point.\nSale value is deducted.",
     ["Ungelernte zeigen"] = "Show unlearned",
     ["Ungelernte Rezepte"] = "Unlearned recipes",
-    ["Zeigt auch Rezepte, die du noch nicht kannst -\npraktisch um zu sehen, ob sich ein Rezept-Kauf lohnt."] = "Also shows recipes you don't know yet -
-handy to see whether buying a recipe pays off.",
+    ["Zeigt auch Rezepte, die du noch nicht kannst -\npraktisch um zu sehen, ob sich ein Rezept-Kauf lohnt."] = "Also shows recipes you don't know yet -\nhandy to see whether buying a recipe pays off.",
     ["%d Rezepte"] = "%d recipes",
     ["%s%s%d Rezepte"] = "%s%s%d recipes",
     ["Herstellen"] = "Craft",
@@ -222,55 +208,38 @@ handy to see whether buying a recipe pays off.",
     ["|cffffcc00%d von %d moeglich|r"] = "|cffffcc00%d of %d possible|r",
     ["|cffff5555Material fehlt|r"] = "|cffff5555Missing materials|r",
     ["|cff88ff88Zwischenschritt|r  "] = "|cff88ff88Intermediate|r  ",
-    ["|cff888888Leer - Rezepte in der Liste\nanklicken, um sie einzuplanen.|r"] = "|cff888888Empty - click recipes in the list
-to queue them.|r",
-    ["\n|cff888888... und %d weitere|r"] = "
-|cff888888... and %d more|r",
-    ["%d Schritte, %d Crafts  \194\183  %d bereit%s"] = "%d steps, %d crafts  9483  %d ready%s",
+    ["|cff888888Leer - Rezepte in der Liste\nanklicken, um sie einzuplanen.|r"] = "|cff888888Empty - click recipes in the list\nto queue them.|r",
+    ["\n|cff888888... und %d weitere|r"] = "\n|cff888888... and %d more|r",
+    ["%d Schritte, %d Crafts  \194\183  %d bereit%s"] = "%d steps, %d crafts  \194\183  %d ready%s",
     ["Berufe einlesen"] = "Read professions",
-    ["Liest deine Rezepte neu ein.\nPassiert auch automatisch beim Oeffnen des Berufsfensters."] = "Re-reads your recipes.
-Also happens automatically when opening the profession window.",
+    ["Liest deine Rezepte neu ein.\nPassiert auch automatisch beim Oeffnen des Berufsfensters."] = "Re-reads your recipes.\nAlso happens automatically when opening the profession window.",
     ["AH scannen"] = "Scan AH",
     ["Startet Auctionators Vollscan (am offenen Auktionshaus, max. alle 15 Min)."] = "Starts Auctionator's full scan (at the open auction house, max. every 15 min).",
     ["Nur Profit"] = "Profit only",
     ["Nur Rezepte mit vollstaendigen Preisen und Gewinn anzeigen."] = "Only show recipes with complete prices and profit.",
     ["Teilrezepte"] = "Sub-recipes",
-    ["Zutaten, die du selbst billiger herstellen kannst,\nwerden mit dem Herstellungspreis gerechnet."] = "Reagents you can craft cheaper yourself
-are calculated at their crafting cost.",
+    ["Zutaten, die du selbst billiger herstellen kannst,\nwerden mit dem Herstellungspreis gerechnet."] = "Reagents you can craft cheaper yourself\nare calculated at their crafting cost.",
     ["Preisquellen"] = "Price sources",
     ["Modus: "] = "Mode: ",
-    ["\nVerfuegbar: "] = "
-Available: ",
-    ["\n\nUmschalten: /fp source"] = "
-
-Switch: /fp source",
+    ["\nVerfuegbar: "] = "\nAvailable: ",
+    ["\n\nUmschalten: /fp source"] = "\n\nSwitch: /fp source",
     ["Anz."] = "Qty",
     ["Rezept"] = "Recipe",
     ["Im AH"] = "At AH",
     ["Verkauf"] = "Sale",
     ["Queue leeren"] = "Clear queue",
     ["Einkaufsliste"] = "Shopping list",
-    ["Alle Zutaten der Queue minus Taschen und Bank.\nAH-Items gehen als Liste 'ForeverProfit' an Auctionator,\nHaendler-Items und Zwischenschritte stehen im Chat."] = "All reagents of the queue minus bags and bank.
-AH items go to Auctionator as list 'ForeverProfit',
-vendor items and intermediate steps are listed in chat.",
+    ["Alle Zutaten der Queue minus Taschen und Bank.\nAH-Items gehen als Liste 'ForeverProfit' an Auctionator,\nHaendler-Items und Zwischenschritte stehen im Chat."] = "All reagents of the queue minus bags and bank.\nAH items go to Auctionator as list 'ForeverProfit',\nvendor items and intermediate steps are listed in chat.",
     ["Links +1   |   Shift+Links +5   |   Rechts -1"] = "Left +1   |   Shift+Left +5   |   Right -1",
     ["Pro Skill"] = "Per skill",
     ["|cffffcc00Lese Berufe ein... %d / %d|r"] = "|cffffcc00Reading professions... %d / %d|r",
     ["|cffffcc00Auktionshaus wird gescannt...|r"] = "|cffffcc00Scanning auction house...|r",
-    ["|cffffd100Skill-Modus|r   \194\183   %d Rezepte geben noch Skill   \194\183   billigste zuerst"] = "|cffffd100Leveling mode|r   9483   %d recipes still give skill   9483   cheapest first",
-    ["Preise %s   \194\183   %d Rezepte angezeigt   \194\183   %d ausgeblendet"] = "Prices %s   9483   %d recipes shown   9483   %d hidden",
-    ["Noch keine Rezepte eingelesen.\n\n|cffaaaaaaBerufsfenster einmal oeffnen.|r"] = "No recipes read yet.
-
-|cffaaaaaaOpen a profession window once.|r",
+    ["|cffffd100Skill-Modus|r   \194\183   %d Rezepte geben noch Skill   \194\183   billigste zuerst"] = "|cffffd100Leveling mode|r   \194\183   %d recipes still give skill   \194\183   cheapest first",
+    ["Preise %s   \194\183   %d Rezepte angezeigt   \194\183   %d ausgeblendet"] = "Prices %s   \194\183   %d recipes shown   \194\183   %d hidden",
+    ["Noch keine Rezepte eingelesen.\n\n|cffaaaaaaBerufsfenster einmal oeffnen.|r"] = "No recipes read yet.\n\n|cffaaaaaaOpen a profession window once.|r",
     ["Kein Rezept passt zur Suche."] = "No recipe matches the search.",
-    ["Keine Rezepte gefunden, die noch Skill geben.\n\n|cffaaaaaaBerufsfenster oeffnen, damit die Skill-Farben\naktuell sind. Hilft das nicht: /fp probe schicken.|r"] = "No recipes found that still give skill.
-
-|cffaaaaaaOpen the profession window so the skill colors
-are up to date. If that doesn't help: send /fp probe.|r",
-    ["Kein Rezept mit Gewinn gefunden.\n\n|cffaaaaaaAm Auktionshaus 'AH scannen' klicken\noder 'Nur Profit' ausschalten.|r"] = "No profitable recipe found.
-
-|cffaaaaaaClick 'Scan AH' at the auction house
-or turn off 'Profit only'.|r",
+    ["Keine Rezepte gefunden, die noch Skill geben.\n\n|cffaaaaaaBerufsfenster oeffnen, damit die Skill-Farben\naktuell sind. Hilft das nicht: /fp probe schicken.|r"] = "No recipes found that still give skill.\n\n|cffaaaaaaOpen the profession window so the skill colors\nare up to date. If that doesn't help: send /fp probe.|r",
+    ["Kein Rezept mit Gewinn gefunden.\n\n|cffaaaaaaAm Auktionshaus 'AH scannen' klicken\noder 'Nur Profit' ausschalten.|r"] = "No profitable recipe found.\n\n|cffaaaaaaClick 'Scan AH' at the auction house\nor turn off 'Profit only'.|r",
     [" (nicht gelernt)|r"] = " (not learned)|r",
     ["|cffffaa33Preis fehlt|r"] = "|cffffaa33price missing|r",
     ["|cffffaa33%d Preis fehlt|r"] = "|cffffaa33%d price missing|r",
