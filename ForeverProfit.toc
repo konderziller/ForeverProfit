@@ -1,0 +1,22 @@
+## Interface: 16001
+## Interface-Forever: 16001
+## Title: ForeverProfit
+## Notes: Shows which crafting recipes are profitable for your character (Auctionator prices).
+## Notes-deDE: Zeigt profitable Crafting-Rezepte (Auctionator-Preise).
+## Author: KonDerZiller
+## Version: 1.4.0
+## SavedVariables: ForeverProfitDB
+## OptionalDeps: Auctionator
+## IconTexture: Interface\Icons\INV_Misc_Coin_02
+## AddonCompartmentFunc: ForeverProfit_OnAddonCompartmentClick
+## X-Forever-TOC: 16001
+## X-Forever-Probe: /fp probe
+
+Core.lua
+Config.lua
+Prices.lua
+AuctionScan.lua
+Professions.lua
+Profit.lua
+UI.lua
+Minimap.lua
