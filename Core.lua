@@ -262,7 +262,14 @@ local activeLocale = (ns.locale == "deDE") and L_DE or L_EN
 ns.L = setmetatable({}, { __index = function(_, k) return activeLocale[k] or k end })
 local L = ns.L
 
-ns.version    = "1.5.0"
+-- Version aus der TOC. Der Packager ersetzt dort @project-version@ durch den
+-- Git-Tag; im Entwicklungsordner steht noch der Platzhalter -> "dev".
+do
+    local getMeta = (C_AddOns and C_AddOns.GetAddOnMetadata) or GetAddOnMetadata
+    local v = type(getMeta) == "function" and getMeta(ADDON_NAME, "Version") or nil
+    if type(v) ~= "string" or v == "" or v:find("@", 1, true) then v = "dev" end
+    ns.version = v
+end
 ns.debug      = false
 ns.FOREVER_TOC = 16001
 

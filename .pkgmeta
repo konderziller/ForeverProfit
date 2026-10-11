@@ -1,0 +1,7 @@
+package-as: ForeverProfit
+
+enable-nolib-creation: no
+
+ignore:
+  - .gitignore
+  - .pkgmeta
