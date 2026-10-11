@@ -1,4 +1,4 @@
-# Packt das Addon bei jedem Versions-Tag (z.B. v1.5.1) und laedt es zu
+﻿# Packt das Addon bei jedem Versions-Tag (z.B. v1.5.1) und laedt es zu
 # CurseForge hoch. Tags mit -alpha / -beta werden dort als Alpha / Beta markiert.
 # Benoetigt das Repository-Secret CF_API_KEY (CurseForge API-Token).
 name: Package and release
@@ -18,7 +18,7 @@ jobs:
       CF_API_KEY: ${{ secrets.CF_API_KEY }}
       GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0   # Packager braucht die Tags fuer Version und Changelog
 
