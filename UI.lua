@@ -326,6 +326,16 @@ local function professionSpell(profName)
 end
 
 --- Berufe mit mindestens einem Rezept, nach Name zusammengefasst.
+-- Basis-Skill-Lines der Herstellungsberufe (Sammelberufe fehlen bewusst):
+-- Schmiedekunst, Lederverarbeitung, Alchemie, Kochen, Bergbau (Verhuetten),
+-- Schneiderei, Ingenieurskunst, Verzauberkunst, Juwelier, Inschriften, Erste Hilfe
+local CRAFTING_LINES = {
+    [164] = true, [165] = true, [171] = true, [185] = true, [186] = true, [197] = true,
+    [202] = true, [333] = true, [755] = true, [773] = true, [129] = true,
+}
+
+--- Berufe fuer die Leiste: alle mit eingelesenen Rezepten, plus
+--- Herstellungsberufe ohne Rezepte (z.B. Kochen, bevor das Fenster offen war).
 local function professionList()
     local counts = {}
     for _, r in ipairs(ns.Professions.recipes or {}) do
@@ -334,10 +344,11 @@ local function professionList()
     local byName, list = {}, {}
     for _, p in ipairs(ns.Professions.professions or {}) do
         local n = p.name
-        if n and counts[n] then
+        local crafting = CRAFTING_LINES[tonumber(p.id) or 0] or CRAFTING_LINES[tonumber(p.parentID) or 0]
+        if n and (counts[n] or crafting) then
             local cur = byName[n]
             if not cur then
-                cur = { name = n, skill = 0, max = 0, recipes = counts[n] }
+                cur = { name = n, skill = 0, max = 0, recipes = counts[n] or 0 }
                 byName[n] = cur
                 list[#list + 1] = cur
             end
@@ -518,7 +529,11 @@ local function updateSidebar()
             b.title:SetText(p.name)
             local skill = (p.max > 0) and string.format("%d/%d", p.skill, p.max)
                           or (p.skill > 0 and tostring(p.skill) or "")
-            b.sub:SetText(string.format(L["%s%s%d Rezepte"], skill, skill ~= "" and "  \194\183  " or "", p.recipes))
+            if p.recipes > 0 then
+                b.sub:SetText(string.format(L["%s%s%d Rezepte"], skill, skill ~= "" and "  \194\183  " or "", p.recipes))
+            else
+                b.sub:SetText(skill .. (skill ~= "" and "  \194\183  " or "") .. L["Fenster oeffnen zum Einlesen"])
+            end
             if profFilter == p.name then b.sel:Show() else b.sel:Hide() end
         end
     end

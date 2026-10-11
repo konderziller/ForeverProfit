@@ -163,6 +163,26 @@ local function collectProfessions()
         end
     end
 
+    -- Zauberbuch-Berufe (GetProfessions): hier steht u.a. Kochen, das die
+    -- C_TradeSkillUI-Listen auf Forever nicht liefern.
+    if type(GetProfessions) == "function" and type(GetProfessionInfo) == "function" then
+        local okP, p1, p2, arch, fish, cook, aid = pcall(GetProfessions)
+        if okP then
+            for _, idx in ipairs({ p1 or false, p2 or false, arch or false, fish or false,
+                                   cook or false, aid or false }) do
+                if idx then
+                    local okI, name, _, rank, maxRank, _, _, skillLine = pcall(GetProfessionInfo, idx)
+                    skillLine = okI and tonumber(ns.Value(skillLine, nil))
+                    if skillLine and not byID[skillLine] then
+                        add(skillLine, { professionName = ns.Value(name, nil),
+                                         skillLevel = ns.Value(rank, 0),
+                                         maxSkillLevel = ns.Value(maxRank, 0) })
+                    end
+                end
+            end
+        end
+    end
+
     local out = {}
     for _, slID in ipairs(order) do
         local p = byID[slID]
@@ -280,7 +300,7 @@ local function saveCache()
     c.professions = {}
     for _, p in ipairs(Professions.professions) do
         c.professions[#c.professions + 1] = { id = p.id, name = p.name, skillLevel = p.skillLevel,
-                                              maxSkillLevel = p.maxSkillLevel }
+                                              maxSkillLevel = p.maxSkillLevel, parentID = p.parentID }
     end
     c.savedAt = time()
 end
@@ -298,12 +318,37 @@ function Professions.RestoreCache()
     return true
 end
 
+--- Gespeicherte Rezepte von Berufen uebernehmen, fuer die dieser Scan
+--- nichts geliefert hat. Das Spiel liefert die Rezeptliste teils nur fuer
+--- das zuletzt geoeffnete Berufsfenster (z.B. Kochen) - ohne Merge wuerden
+--- die anderen Berufe dabei verschwinden.
+local function mergeCachedRecipes()
+    local c = charCache()
+    if not (c and type(c.recipes) == "table") then return end
+    local found, owned = {}, {}
+    for _, r in ipairs(Professions.recipes) do
+        if r.profession then found[r.profession] = true end
+        addedRecipes[r.recipeID or 0] = true
+    end
+    for _, p in ipairs(Professions.professions) do
+        if p.name then owned[p.name] = true end
+    end
+    for _, r in ipairs(c.recipes) do
+        local prof = r.profession
+        if prof and owned[prof] and not found[prof] and not addedRecipes[r.recipeID or 0] then
+            addedRecipes[r.recipeID or 0] = true
+            Professions.recipes[#Professions.recipes + 1] = r
+        end
+    end
+end
+
 local function finishScan()
     Professions.running = false
     Professions.lastScan = time()
     driver:SetScript("OnUpdate", nil)
     Professions.mode = (#Professions.recipes > 0) and "modern" or "modern-leer"
     if #Professions.recipes > 0 then
+        mergeCachedRecipes()
         saveCache()
     else
         Professions.lastError = L["keine Rezepte nach Filter"]

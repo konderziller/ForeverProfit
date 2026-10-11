@@ -19,6 +19,7 @@ ns.ADDON_NAME = ADDON_NAME
 -- Schluessel = urspruenglicher deutscher Text. Deutscher Client -> L_DE
 -- (echte Umlaute, sonst Schluessel), alle anderen Sprachen -> L_EN.
 local L_DE = {
+    ["Fenster oeffnen zum Einlesen"] = "Fenster öffnen zum Einlesen",
     ["Mit Beruf oeffnen"] = "Mit Beruf öffnen",
     ["ForeverProfit oeffnet sich automatisch mit dem Berufsfenster\nund zeigt die Rezepte dieses Berufs."] = "ForeverProfit öffnet sich automatisch mit dem Berufsfenster\nund zeigt die Rezepte dieses Berufs.",
     ["  /fp auto      - mit dem Berufsfenster oeffnen an/aus"] = "  /fp auto      - mit dem Berufsfenster öffnen an/aus",
@@ -69,6 +70,7 @@ local L_DE = {
 }
 
 local L_EN = {
+    ["Fenster oeffnen zum Einlesen"] = "open window to read recipes",
     ["Mit Beruf oeffnen"] = "Open with profession",
     ["ForeverProfit oeffnet sich automatisch mit dem Berufsfenster\nund zeigt die Rezepte dieses Berufs."] = "ForeverProfit opens automatically with the profession window\nand shows that profession's recipes.",
     ["  /fp auto      - mit dem Berufsfenster oeffnen an/aus"] = "  /fp auto      - open with profession window on/off",
