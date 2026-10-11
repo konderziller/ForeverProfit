@@ -19,6 +19,10 @@ ns.ADDON_NAME = ADDON_NAME
 -- Schluessel = urspruenglicher deutscher Text. Deutscher Client -> L_DE
 -- (echte Umlaute, sonst Schluessel), alle anderen Sprachen -> L_EN.
 local L_DE = {
+    ["Mit Beruf oeffnen"] = "Mit Beruf öffnen",
+    ["ForeverProfit oeffnet sich automatisch mit dem Berufsfenster\nund zeigt die Rezepte dieses Berufs."] = "ForeverProfit öffnet sich automatisch mit dem Berufsfenster\nund zeigt die Rezepte dieses Berufs.",
+    ["  /fp auto      - mit dem Berufsfenster oeffnen an/aus"] = "  /fp auto      - mit dem Berufsfenster öffnen an/aus",
+    ["Mit dem Berufsfenster oeffnen: "] = "Mit dem Berufsfenster öffnen: ",
     ["AH-Scan fertig: %d Angebote uebernommen."] = "AH-Scan fertig: %d Angebote übernommen.",
     ["|cffffcc00Bitte zuerst das Auktionshaus oeffnen.|r"] = "|cffffcc00Bitte zuerst das Auktionshaus öffnen.|r",
     ["|cffff5555C_AuctionHouse.ReplicateItems fehlt|r - nativer Scan nicht moeglich."] = "|cffff5555C_AuctionHouse.ReplicateItems fehlt|r - nativer Scan nicht möglich.",
@@ -65,6 +69,10 @@ local L_DE = {
 }
 
 local L_EN = {
+    ["Mit Beruf oeffnen"] = "Open with profession",
+    ["ForeverProfit oeffnet sich automatisch mit dem Berufsfenster\nund zeigt die Rezepte dieses Berufs."] = "ForeverProfit opens automatically with the profession window\nand shows that profession's recipes.",
+    ["  /fp auto      - mit dem Berufsfenster oeffnen an/aus"] = "  /fp auto      - open with profession window on/off",
+    ["Mit dem Berufsfenster oeffnen: "] = "Open with profession window: ",
     ["AH-Scan fertig: %d Angebote uebernommen."] = "AH scan finished: %d listings imported.",
     ["|cffff5555Auctionator-Scan-Fehler:|r "] = "|cffff5555Auctionator scan error:|r ",
     ["Auctionator-Vollscan gestartet - die Liste aktualisiert sich danach automatisch."] = "Auctionator full scan started - the list updates automatically afterwards.",
@@ -254,7 +262,7 @@ local activeLocale = (ns.locale == "deDE") and L_DE or L_EN
 ns.L = setmetatable({}, { __index = function(_, k) return activeLocale[k] or k end })
 local L = ns.L
 
-ns.version    = "1.4.0"
+ns.version    = "1.5.0"
 ns.debug      = false
 ns.FOREVER_TOC = 16001
 
@@ -465,6 +473,7 @@ local function handle(input)
         ns:Print(L["  /fp ahscan    - Auktionshaus-Preisscan (am AH)"])
         ns:Print(L["  /fp source    - Preisquelle umschalten"])
         ns:Print(L["  /fp learned   - nur gelernte Rezepte an/aus"])
+        ns:Print(L["  /fp auto      - mit dem Berufsfenster oeffnen an/aus"])
         ns:Print(L["  /fp minimap   - Minimap-Button an/aus"])
         ns:Print(L["  /fp probe     - API-Dump (zur Fehlersuche)"])
         ns:Print(L["  /fp debug     - Debug an/aus"])
@@ -487,6 +496,13 @@ local function handle(input)
         end
     elseif input == "minimap" then
         if ns.Minimap then ns.Minimap.Toggle() end
+    elseif input == "auto" then
+        local db = ns.Config and ns.Config.db
+        if db then
+            db.autoOpen = (db.autoOpen == false)
+            ns:Print(L["Mit dem Berufsfenster oeffnen: "] .. (db.autoOpen and L["an"] or L["aus"]))
+            if ns.UI and ns.UI.Refresh then ns.UI.Refresh() end
+        end
     elseif input == "learned" then
         local db = ns.Config and ns.Config.db
         if db then

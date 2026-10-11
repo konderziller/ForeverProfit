@@ -4,7 +4,7 @@
 ## Notes: Shows which crafting recipes are profitable for your character (Auctionator prices).
 ## Notes-deDE: Zeigt profitable Crafting-Rezepte (Auctionator-Preise).
 ## Author: KonDerZiller
-## Version: 1.4.0
+## Version: 1.5.0
 ## SavedVariables: ForeverProfitDB
 ## OptionalDeps: Auctionator
 ## IconTexture: Interface\Icons\INV_Misc_Coin_02

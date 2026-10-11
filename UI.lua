@@ -33,6 +33,8 @@ local profitHead
 local frame, scroll, scrollChild, rows
 local statusText, footerText, emptyText, searchBox, profitCheck, subCheck
 local searchText = ""
+local autoOpened = false    -- Fenster wurde vom Berufsfenster geoeffnet
+local userMoved = false     -- Spieler hat das Fenster selbst verschoben
 local profFilter            -- Berufsname oder nil (= alle)
 local sidebar, allBtn, sidebarSig
 local profButtons = {}
@@ -452,6 +454,13 @@ local function buildSidebar()
         UI.Refresh()
     end)
     sidebar.unlearned:SetPoint("BOTTOMLEFT", 8, 62)
+
+    sidebar.autoOpen = checkbox(sidebar, L["Mit Beruf oeffnen"], function(self)
+        ns.Config.db.autoOpen = self:GetChecked() and true or false
+    end)
+    sidebar.autoOpen:SetPoint("BOTTOMLEFT", 8, 86)
+    tooltip(sidebar.autoOpen, L["Mit Beruf oeffnen"],
+        L["ForeverProfit oeffnet sich automatisch mit dem Berufsfenster\nund zeigt die Rezepte dieses Berufs."])
     tooltip(sidebar.unlearned, L["Ungelernte Rezepte"],
         L["Zeigt auch Rezepte, die du noch nicht kannst -\npraktisch um zu sehen, ob sich ein Rezept-Kauf lohnt."])
 end
@@ -474,6 +483,7 @@ local function updateSidebar()
         sidebar.profitBtn:LockHighlight(); sidebar.skillBtn:UnlockHighlight()
     end
     sidebar.unlearned:SetChecked(not db.onlyLearned)
+    sidebar.autoOpen:SetChecked(db.autoOpen ~= false)
 
     allBtn.sub:SetText(string.format(L["%d Rezepte"], #(ns.Professions.recipes or {})))
     if profFilter then allBtn.sel:Hide() else allBtn.sel:Show() end
@@ -663,7 +673,10 @@ local function build()
     frame:EnableMouse(true)
     frame:RegisterForDrag("LeftButton")
     frame:SetScript("OnDragStart", frame.StartMoving)
-    frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
+    frame:SetScript("OnDragStop", function(self)
+        self:StopMovingOrSizing()
+        userMoved = true
+    end)
     frame:SetFrameStrata("DIALOG")
     frame:Hide()
     setBackdrop(frame)
@@ -1018,6 +1031,7 @@ function UI.Toggle()
         return
     end
     build()
+    autoOpened = false
     if frame:IsShown() then
         frame:Hide()
     else
@@ -1032,10 +1046,75 @@ end
 -- Kampfbeginn: Fenster schliessen, solange das noch erlaubt ist
 -- (PLAYER_REGEN_DISABLED kommt vor dem Combat-Lockdown). Die Berufs-Buttons
 -- sind Secure-Buttons und duerfen im Kampf nicht gezeigt/versteckt werden.
+-- Mit dem Berufsfenster oeffnen --------------------------------------------
+-- TRADE_SKILL_SHOW -> Fenster auf, Liste auf den offenen Beruf filtern,
+-- rechts neben das Berufsfenster setzen (solange nicht selbst verschoben).
+-- TRADE_SKILL_CLOSE -> wieder zu, aber nur wenn es automatisch aufging.
+
+local function professionFrame()
+    for _, name in ipairs({ "ProfessionsFrame", "TradeSkillFrame" }) do
+        local f = _G[name]
+        if type(f) == "table" and f.IsShown and f:IsShown() then return f end
+    end
+    return nil
+end
+
+--- Offenen Beruf in der Liste waehlen (lockerer Namensvergleich).
+local function filterToOpenProfession()
+    if not frame or not frame:IsShown() then return end
+    local open = ns.Profit.OpenProfession and ns.Profit.OpenProfession()
+    if type(open) ~= "string" then return end
+    local a = open:lower()
+    for _, p in ipairs(professionList()) do
+        local b = p.name:lower()
+        if a:find(b, 1, true) or b:find(a, 1, true) then
+            if profFilter ~= p.name then setFilter(p.name) end
+            return
+        end
+    end
+end
+
+local function onProfessionShow()
+    local db = ns.Config and ns.Config.db
+    if not db or db.autoOpen == false then return end
+    if InCombatLockdown and InCombatLockdown() then return end
+    build()
+    if not frame:IsShown() then
+        UI.Toggle()
+        autoOpened = true
+        local pf = professionFrame()
+        if pf and not userMoved then
+            frame:ClearAllPoints()
+            -- Platz fuer die Berufe-Leiste links am Fenster lassen.
+            frame:SetPoint("TOPLEFT", pf, "TOPRIGHT", SIDE_W + 4, 0)
+        end
+    end
+    filterToOpenProfession()
+    -- Berufsdaten sind beim Event evtl. noch nicht fertig -> nochmal.
+    ns.C_Timer_After(0.5, filterToOpenProfession)
+end
+
+local function onProfessionClose()
+    if autoOpened and frame and frame:IsShown()
+       and not (InCombatLockdown and InCombatLockdown()) then
+        frame:Hide()
+    end
+    autoOpened = false
+end
+
 local combat = CreateFrame("Frame")
 combat:RegisterEvent("PLAYER_REGEN_DISABLED")
 combat:RegisterEvent("BAG_UPDATE_DELAYED")
+combat:RegisterEvent("TRADE_SKILL_SHOW")
+combat:RegisterEvent("TRADE_SKILL_CLOSE")
 combat:SetScript("OnEvent", function(_, event)
+    if event == "TRADE_SKILL_SHOW" then
+        onProfessionShow()
+        return
+    elseif event == "TRADE_SKILL_CLOSE" then
+        onProfessionClose()
+        return
+    end
     if event == "BAG_UPDATE_DELAYED" then
         -- Material gekauft/hergestellt -> Herstellliste aktualisieren.
         if frame and frame:IsShown() then UI.ScheduleRefresh() end

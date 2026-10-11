@@ -17,6 +17,7 @@ local DEFAULTS = {
     includeUnprofitable = true,  -- (alt, ungenutzt)
     onlyProfit = true,           -- nur Rezepte mit Gewinn > 0 anzeigen
     onlyLearned = true,          -- nur Rezepte, die der Char kann
+    autoOpen = true,             -- mit dem Berufsfenster oeffnen
     useSubCrafts = true,         -- Zwischenprodukte selbst herstellen, wenn billiger
     mode = "profit",             -- "profit" | "skill"
     ahCut = 0.05,                -- AH-Gebuehr auf den Verkaufserloes

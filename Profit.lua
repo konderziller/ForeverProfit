@@ -478,6 +478,8 @@ local function openProfession()
     return nil
 end
 
+Profit.OpenProfession = openProfession
+
 --- Einen Eintrag herstellen (so oft wie Queue und Material erlauben).
 --- Muss aus einem Klick heraus aufgerufen werden.
 function Profit.Craft(entry)
