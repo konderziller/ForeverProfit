@@ -9,6 +9,7 @@
 ## OptionalDeps: Auctionator
 ## IconTexture: Interface\Icons\INV_Misc_Coin_02
 ## AddonCompartmentFunc: ForeverProfit_OnAddonCompartmentClick
+## X-Curse-Project-ID: 1738793
 ## X-Forever-TOC: 16001
 ## X-Forever-Probe: /fp probe
 
