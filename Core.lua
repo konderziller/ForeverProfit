@@ -385,6 +385,14 @@ function ns.Try(fn, ...)
     return a, b, c, d
 end
 
+-- Item count across client versions: newer clients (e.g. WoW Forever) only
+-- expose C_Item.GetItemCount, older ones the global GetItemCount.
+function ns.ItemCount(id, includeBank)
+    local fn = (C_Item and C_Item.GetItemCount) or GetItemCount
+    if type(fn) ~= "function" or not id then return 0 end
+    return tonumber(ns.Try(fn, id, includeBank)) or 0
+end
+
 function ns.Str(v, fallback)
     if v == nil or ns.IsSecret(v) then return fallback or "?" end
     return tostring(v)

@@ -76,8 +76,7 @@ local function qualityHex(q)
 end
 
 local function owned(id)
-    if not id or type(GetItemCount) ~= "function" then return 0 end
-    return tonumber(ns.Try(GetItemCount, id, true)) or 0
+    return ns.ItemCount(id, true)
 end
 
 local function setBackdrop(f, bgAlpha)
@@ -591,7 +590,7 @@ local function makeCraftRow(i)
         GameTooltip:AddLine(" ")
         for _, rg in ipairs(e.recipe.reagents or {}) do
             local name, q = itemInfo(rg.id)
-            local bag = tonumber(ns.Try(GetItemCount, rg.id, false)) or 0
+            local bag = ns.ItemCount(rg.id, false)
             local need = (rg.count or 1) * e.times
             local col = bag >= need and "|cff44ff44" or "|cffff5555"
             GameTooltip:AddDoubleLine(string.format("|c%s%s|r", qualityHex(q), name or ("Item " .. ns.Str(rg.id))),

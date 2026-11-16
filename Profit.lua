@@ -294,10 +294,7 @@ function Profit.BuildShopping()
 
     local function have(id)
         if avail[id] == nil then
-            local n = 0
-            if type(GetItemCount) == "function" then
-                n = tonumber(ns.Try(GetItemCount, id, true)) or 0
-            end
+            local n = ns.ItemCount(id, true)
             avail[id] = n
         end
         return avail[id]
@@ -422,10 +419,7 @@ end
 function Profit.CraftableNow(recipe)
     local n
     for _, rg in ipairs(recipe.reagents or {}) do
-        local have = 0
-        if type(GetItemCount) == "function" then
-            have = tonumber(ns.Try(GetItemCount, rg.id, false)) or 0
-        end
+        local have = ns.ItemCount(rg.id, false)
         local possible = math.floor(have / math.max(rg.count or 1, 1))
         if not n or possible < n then n = possible end
     end
