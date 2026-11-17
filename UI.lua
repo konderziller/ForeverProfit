@@ -530,9 +530,9 @@ local function updateSidebar()
             local skill = (p.max > 0) and string.format("%d/%d", p.skill, p.max)
                           or (p.skill > 0 and tostring(p.skill) or "")
             if p.recipes > 0 then
-                b.sub:SetText(string.format(L["%s%s%d Rezepte"], skill, skill ~= "" and "  \194\183  " or "", p.recipes))
+                b.sub:SetText(string.format(L["%s%s%d Rezepte"], skill, skill ~= "" and "  ||  " or "", p.recipes))
             else
-                b.sub:SetText(skill .. (skill ~= "" and "  \194\183  " or "") .. L["Fenster oeffnen zum Einlesen"])
+                b.sub:SetText(skill .. (skill ~= "" and "  ||  " or "") .. L["Fenster oeffnen zum Einlesen"])
             end
             if profFilter == p.name then b.sel:Show() else b.sel:Hide() end
         end
@@ -668,7 +668,7 @@ local function updateCraftPanel()
     else
         local more = #craftEntries > CRAFT_ROWS and
             string.format(L["\n|cff888888... und %d weitere|r"], #craftEntries - CRAFT_ROWS) or ""
-        craftSummary:SetText(string.format(L["%d Schritte, %d Crafts  \194\183  %d bereit%s"],
+        craftSummary:SetText(string.format(L["%d Schritte, %d Crafts  ||  %d bereit%s"],
             #craftEntries, total, ready, more))
         if ready > 0 then craftNextBtn:Enable() else craftNextBtn:Disable() end
     end
@@ -941,11 +941,11 @@ function UI.Refresh()
         statusText:SetText(L["|cffffcc00Auktionshaus wird gescannt...|r"])
     elseif skillMode then
         statusText:SetText(string.format(
-            L["|cffffd100Skill-Modus|r   \194\183   %d Rezepte geben noch Skill   \194\183   billigste zuerst"],
+            L["|cffffd100Skill-Modus|r   ||   %d Rezepte geben noch Skill   ||   billigste zuerst"],
             #evaluated))
     else
         statusText:SetText(string.format(
-            L["Preise %s   \194\183   %d Rezepte angezeigt   \194\183   %d ausgeblendet"],
+            L["Preise %s   ||   %d Rezepte angezeigt   ||   %d ausgeblendet"],
             ns.Prices.AgeText(), #evaluated, hidden or 0))
     end
 
