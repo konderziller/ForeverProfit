@@ -59,8 +59,8 @@ end
 
 local function ItemNameFromLink(link)
     if type(link) ~= "string" or ns.IsSecret(link) then return nil end
-    local ok, name = ns.Call(GetItemInfo, link)
-    if ok and type(name) == "string" then return name end
+    local name = ns.ItemInfo(link)
+    if name then return name end
     return link:match("%[(.-)%]")
 end
 

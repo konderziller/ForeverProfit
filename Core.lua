@@ -385,6 +385,40 @@ function ns.Try(fn, ...)
     return a, b, c, d
 end
 
+-- Item count across client versions: newer clients (e.g. WoW Forever) only
+-- expose C_Item.GetItemCount, older ones the global GetItemCount.
+function ns.ItemCount(id, includeBank)
+    local fn = (C_Item and C_Item.GetItemCount) or GetItemCount
+    if type(fn) ~= "function" or not id then return 0 end
+    return tonumber(ns.Try(fn, id, includeBank)) or 0
+end
+
+-- Item name, quality and icon across client versions: newer clients (e.g.
+-- WoW Forever) only expose C_Item.GetItemInfo, older ones the global
+-- GetItemInfo. `id` may also be an item link. Returns nil values while the
+-- item data is not loaded yet; a load request is sent so a later call succeeds.
+function ns.ItemInfo(id)
+    if not id then return nil end
+    local fn = (C_Item and C_Item.GetItemInfo) or GetItemInfo
+    if type(fn) ~= "function" then return nil end
+    local ok, name, _, quality, _, _, _, _, _, _, icon = pcall(fn, id)
+    if not ok then return nil end
+    if type(name) ~= "string" then name = nil end
+    if type(quality) ~= "number" then quality = nil end
+    if not icon then
+        local iconFn = (C_Item and C_Item.GetItemIconByID) or GetItemIcon
+        if type(iconFn) == "function" then
+            local ok2, ic = pcall(iconFn, id)
+            if ok2 then icon = ic end
+        end
+    end
+    if not name and type(id) == "number"
+        and C_Item and type(C_Item.RequestLoadItemDataByID) == "function" then
+        ns.Try(C_Item.RequestLoadItemDataByID, id)
+    end
+    return name, quality, icon
+end
+
 function ns.Str(v, fallback)
     if v == nil or ns.IsSecret(v) then return fallback or "?" end
     return tostring(v)
