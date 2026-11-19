@@ -118,6 +118,7 @@ def run(locale):
     return not errs
 
 
-ok = all(run(loc) for loc in ("deDE", "enUS"))
-print("OK" if ok else "FAILED")
-sys.exit(0 if ok else 1)
+if __name__ == "__main__":
+    ok = all(run(loc) for loc in ("deDE", "enUS"))
+    print("OK" if ok else "FAILED")
+    sys.exit(0 if ok else 1)
