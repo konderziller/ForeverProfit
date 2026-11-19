@@ -143,18 +143,22 @@ function Profit.Evaluate(recipe)
     cost = math.floor(cost + 0.5)
 
     local out = recipe.output or {}
-    local outPrice = ns.Prices.GetForID(out.id, out.name)
-    local revenue = math.floor((outPrice or 0) * (out.count or 1) * cutFactor())
-
-    local profit = revenue - cost
+    local listPrice = ns.Prices.GetForID(out.id, out.name)
+    local outPrice = listPrice
 
     -- Marktlage des Ergebnisses
     local market = out.id and ns.Prices.Market(out.id)
     local stale, spike = false, false
-    if outPrice and market then
+    -- Eigene Preise (/fp price) gelten immer, auch bei Preisspitzen.
+    if listPrice and market and not ns.Prices.HasManual(out.id, out.name) then
         stale = (market.age == nil) or (market.age >= STALE_DAYS)
-        spike = market.median ~= nil and market.days >= 3 and outPrice > market.median * SPIKE_FACTOR
+        spike = market.median ~= nil and market.days >= 3 and listPrice > market.median * SPIKE_FACTOR
     end
+    -- Preisspitze: mit dem Median rechnen, sonst landet das Rezept zu Unrecht oben.
+    if spike then outPrice = market.median end
+
+    local revenue = math.floor((outPrice or 0) * (out.count or 1) * cutFactor())
+    local profit = revenue - cost
 
     -- Skill-Kosten: was kostet ein erwarteter Skillpunkt (Kosten minus Verkauf)?
     local skillCost
@@ -175,6 +179,7 @@ function Profit.Evaluate(recipe)
         hasOutput = outPrice ~= nil,
         complete  = (unknown == 0 and outPrice ~= nil),
         market    = market,
+        listPrice = listPrice,
         stale     = stale,
         spike     = spike,
         skillCost = skillCost,
