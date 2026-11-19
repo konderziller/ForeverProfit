@@ -32,6 +32,10 @@ local profitHead
 
 local frame, scroll, scrollChild, rows
 local statusText, footerText, emptyText, searchBox, profitCheck, subCheck, sourceBtn
+-- Rows are redrawn from this cached list while scrolling; only UI.Refresh
+-- recalculates it (Profit.All evaluates and sorts every recipe).
+local renderRows
+local viewList, viewMulti, viewSkill = {}, false, false
 local searchText = ""
 local autoOpened = false    -- Fenster wurde vom Berufsfenster geoeffnet
 local userMoved = false     -- Spieler hat das Fenster selbst verschoben
@@ -881,7 +885,6 @@ local function build()
         local v = scroll:GetVerticalScroll() + (delta > 0 and -ROW_H or ROW_H)
         local maxScroll = math.max(0, scrollChild:GetHeight() - scroll:GetHeight())
         scroll:SetVerticalScroll(math.min(math.max(v, 0), maxScroll))
-        UI.Refresh()
     end)
 
     buildSidebar()
@@ -908,66 +911,16 @@ local function matchesSearch(e)
     return (ns.Str(e.recipe.name, "")):lower():find(searchText, 1, true) ~= nil
 end
 
-function UI.Refresh()
-    -- Geschlossenes Fenster nicht neu rechnen (Auctionator meldet bei jeder Suche).
-    if not frame or not frame:IsShown() then return end
-    updateSidebar()
-    local db = ns.Config.db
-    if sourceBtn then sourceBtn:SetText(L["Preise: "] .. ns.Prices.ModeLabel(db.priceSource)) end
-    local all, hidden = ns.Profit.All()
-    profitCheck:SetChecked(db.onlyProfit and true or false)
-    subCheck:SetChecked(db.useSubCrafts ~= false)
+renderRows = function()
+    local evaluated, multi, skillMode = viewList, viewMulti, viewSkill
 
-    local evaluated = {}
-    for _, e in ipairs(all) do
-        if matchesSearch(e) then evaluated[#evaluated + 1] = e end
-    end
-
-    -- Mehrere Berufe? Dann Beruf hinter dem Namen anzeigen.
-    local skillMode = db.mode == "skill"
-    local profs, multi = {}, false
-    for _, e in ipairs(evaluated) do
-        local p = e.recipe.profession or "?"
-        profs[p] = true
-        if next(profs, next(profs)) then multi = true; break end
-    end
-
-    profitHead:SetText(skillMode and L["Pro Skill"] or L["Gewinn"])
-
-    if ns.Professions.running then
-        local p = ns.Professions.progress
-        statusText:SetText(string.format(L["|cffffcc00Lese Berufe ein... %d / %d|r"], p.done, p.total))
-    elseif ns.AuctionScan.running then
-        statusText:SetText(L["|cffffcc00Auktionshaus wird gescannt...|r"])
-    elseif skillMode then
-        statusText:SetText(string.format(
-            L["|cffffd100Skill-Modus|r   \194\183   %d Rezepte geben noch Skill   \194\183   billigste zuerst"],
-            #evaluated))
-    else
-        statusText:SetText(string.format(
-            L["Preise %s   \194\183   %d Rezepte angezeigt   \194\183   %d ausgeblendet"],
-            ns.Prices.AgeText(), #evaluated, hidden or 0))
-    end
-
-    if #evaluated > 0 then
-        emptyText:SetText("")
-    elseif #(ns.Professions.recipes or {}) == 0 then
-        emptyText:SetText(L["Noch keine Rezepte eingelesen.\n\n|cffaaaaaaBerufsfenster einmal oeffnen.|r"])
-    elseif searchText ~= "" then
-        emptyText:SetText(L["Kein Rezept passt zur Suche."])
-    elseif skillMode then
-        emptyText:SetText(L["Keine Rezepte gefunden, die noch Skill geben.\n\n|cffaaaaaaBerufsfenster oeffnen, damit die Skill-Farben\naktuell sind. Hilft das nicht: /fp probe schicken.|r"])
-    elseif db.onlyProfit then
-        emptyText:SetText(L["Kein Rezept mit Gewinn gefunden.\n\n|cffaaaaaaAm Auktionshaus 'AH scannen' klicken\noder 'Nur Profit' ausschalten.|r"])
-    else
-        emptyText:SetText("")
-    end
-
-    local offset = math.max(0, math.floor(scroll:GetVerticalScroll() / ROW_H + 0.5))
-
-    for i = 1, ROWS do
+    -- One row per entry, created on demand and anchored at its fixed position in
+    -- scrollChild. The scroll frame scrolls them natively, so scrolling needs no
+    -- redraw at all; only a data refresh rebuilds the rows.
+    for i = 1, math.max(#evaluated, #rows) do
         local row = rows[i]
-        local e = evaluated[offset + i]
+        if not row then row = makeRow(i); rows[i] = row end
+        local e = evaluated[i]
         row.entry = e
         if not e then
             row:Hide()
@@ -1038,10 +991,69 @@ function UI.Refresh()
             end
         end
     end
+end
+
+function UI.Refresh()
+    -- Geschlossenes Fenster nicht neu rechnen (Auctionator meldet bei jeder Suche).
+    if not frame or not frame:IsShown() then return end
+    updateSidebar()
+    local db = ns.Config.db
+    if sourceBtn then sourceBtn:SetText(L["Preise: "] .. ns.Prices.ModeLabel(db.priceSource)) end
+    local all, hidden = ns.Profit.All()
+    profitCheck:SetChecked(db.onlyProfit and true or false)
+    subCheck:SetChecked(db.useSubCrafts ~= false)
+
+    local evaluated = {}
+    for _, e in ipairs(all) do
+        if matchesSearch(e) then evaluated[#evaluated + 1] = e end
+    end
+
+    -- Mehrere Berufe? Dann Beruf hinter dem Namen anzeigen.
+    local skillMode = db.mode == "skill"
+    local profs, multi = {}, false
+    for _, e in ipairs(evaluated) do
+        local p = e.recipe.profession or "?"
+        profs[p] = true
+        if next(profs, next(profs)) then multi = true; break end
+    end
+
+    profitHead:SetText(skillMode and L["Pro Skill"] or L["Gewinn"])
+
+    if ns.Professions.running then
+        local p = ns.Professions.progress
+        statusText:SetText(string.format(L["|cffffcc00Lese Berufe ein... %d / %d|r"], p.done, p.total))
+    elseif ns.AuctionScan.running then
+        statusText:SetText(L["|cffffcc00Auktionshaus wird gescannt...|r"])
+    elseif skillMode then
+        statusText:SetText(string.format(
+            L["|cffffd100Skill-Modus|r   \194\183   %d Rezepte geben noch Skill   \194\183   billigste zuerst"],
+            #evaluated))
+    else
+        statusText:SetText(string.format(
+            L["Preise %s   \194\183   %d Rezepte angezeigt   \194\183   %d ausgeblendet"],
+            ns.Prices.AgeText(), #evaluated, hidden or 0))
+    end
+
+    if #evaluated > 0 then
+        emptyText:SetText("")
+    elseif #(ns.Professions.recipes or {}) == 0 then
+        emptyText:SetText(L["Noch keine Rezepte eingelesen.\n\n|cffaaaaaaBerufsfenster einmal oeffnen.|r"])
+    elseif searchText ~= "" then
+        emptyText:SetText(L["Kein Rezept passt zur Suche."])
+    elseif skillMode then
+        emptyText:SetText(L["Keine Rezepte gefunden, die noch Skill geben.\n\n|cffaaaaaaBerufsfenster oeffnen, damit die Skill-Farben\naktuell sind. Hilft das nicht: /fp probe schicken.|r"])
+    elseif db.onlyProfit then
+        emptyText:SetText(L["Kein Rezept mit Gewinn gefunden.\n\n|cffaaaaaaAm Auktionshaus 'AH scannen' klicken\noder 'Nur Profit' ausschalten.|r"])
+    else
+        emptyText:SetText("")
+    end
 
     scrollChild:SetSize(ROW_W, math.max(ROWS * ROW_H, #evaluated * ROW_H))
     local maxScroll = math.max(0, scrollChild:GetHeight() - scroll:GetHeight())
     if scroll:GetVerticalScroll() > maxScroll then scroll:SetVerticalScroll(maxScroll) end
+
+    viewList, viewMulti, viewSkill = evaluated, multi, skillMode
+    renderRows()
 
     local s = ns.Profit.QueueSummary()
     if s.crafts == 0 then
