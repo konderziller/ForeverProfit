@@ -75,6 +75,15 @@ e = evaluate(lua, ns, "{ {minSeen=1000}, {minSeen=400} }")
 results += [check("short history spike", e.spike, False),
             check("short history revenue", e.revenue, 950)]
 
+# Own price set with /fp price: never replaced by the median.
+lua.eval("function(ns) ns.Config.db.manualPrices = { [2580] = 1000 } end")(ns)
+e = evaluate(lua, ns, "{ {minSeen=1000}, {minSeen=500}, {minSeen=500}, {minSeen=450} }")
+results += [check("manual price spike", e.spike, False),
+            check("manual price revenue", e.revenue, 950)]
+lua.eval("function(ns) ns.Config.db.manualPrices = { [\"Linen Bag\"] = 1000 }; AUC_PRICES[2580] = nil end")(ns)
+e = evaluate(lua, ns, "{ {minSeen=1000}, {minSeen=500}, {minSeen=500}, {minSeen=450} }")
+results += [check("manual price by name revenue", e.revenue, 950)]
+
 ok = all(results)
 print("OK" if ok else "FAILED")
 sys.exit(0 if ok else 1)

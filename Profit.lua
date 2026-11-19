@@ -149,7 +149,8 @@ function Profit.Evaluate(recipe)
     -- Marktlage des Ergebnisses
     local market = out.id and ns.Prices.Market(out.id)
     local stale, spike = false, false
-    if listPrice and market then
+    -- Eigene Preise (/fp price) gelten immer, auch bei Preisspitzen.
+    if listPrice and market and not ns.Prices.HasManual(out.id, out.name) then
         stale = (market.age == nil) or (market.age >= STALE_DAYS)
         spike = market.median ~= nil and market.days >= 3 and listPrice > market.median * SPIKE_FACTOR
     end

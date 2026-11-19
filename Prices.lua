@@ -146,6 +146,14 @@ function Prices.GetManual(itemID)
     return tryManual(tonumber(itemID))
 end
 
+--- true, wenn fuer das Item ein eigener Preis (/fp price) gesetzt ist.
+function Prices.HasManual(itemID, name)
+    local db = ns.Config and ns.Config.db
+    local m = db and db.manualPrices
+    if not m then return false end
+    return toNumber(m[tonumber(itemID)]) ~= nil or (name ~= nil and toNumber(m[name]) ~= nil)
+end
+
 --- Verkaufspreis (AH) fuer ein Item: ItemID, ersatzweise manueller Preis per Name.
 function Prices.GetForID(itemID, name)
     return Prices.Get(itemID) or (name and tryManual(name)) or nil
